@@ -1,5 +1,5 @@
-let maze = document.querySelector(".maze");
-let ctx = maze.getContext("2d");
+const maze = document.querySelector(".maze");
+const ctx = maze.getContext("2d");
 let generationComplete = false;
 
 let current; //refres to current visited grid;
@@ -33,12 +33,11 @@ class Maze {
 
     for (let r = 0; r < this.rows; r++) {
       for (let c = 0; c < this.columns; c++) {
-        let grid = this.grid;
-        grid[r][c].show(this.size, this.rows, this.columns);
+        this.grid[r][c].show(this.size, this.rows, this.columns);
       }
     }
 
-    let next = current.checkNeighbours();
+    const next = current.checkNeighbours();
     //if neighbour exist:
     if (next) {
       next.visited = true;
@@ -56,10 +55,7 @@ class Maze {
       generationComplete = true;
       return;
     }
-    window.requestAnimationFrame(() => {
-      this.draw();
-    });
-
+    requestAnimationFrame(() => this.draw());
     //end of draw
   }
   //end of maze
@@ -81,29 +77,26 @@ class Cell {
   }
 
   checkNeighbours() {
-    let grid = this.parentGrid;
-    let row = this.rowNum;
-    let col = this.colNum;
-    let neighbours = [];
+    const grid = this.parentGrid;
+    const row = this.rowNum;
+    const col = this.colNum;
+    const neighbours = [];
 
-    let top = row !== 0 ? grid[row - 1][col] : undefined;
-    let right = col !== grid.length - 1 ? grid[row][col + 1] : undefined;
-    let bottom = row !== grid.length - 1 ? grid[row + 1][col] : undefined;
-    let left = col !== 0 ? grid[row][col - 1] : undefined;
+    const top = row !== 0 ? grid[row - 1][col] : null;
+    const right = col !== grid.length - 1 ? grid[row][col + 1] : null;
+    const bottom = row !== grid.length - 1 ? grid[row + 1][col] : null;
+    const left = col !== 0 ? grid[row][col - 1] : null;
 
-    // if the following are not 'undefined' then push them to the neighbours array
+    // if the following are not 'null' then push them to the neighbours array
     if (top && !top.visited) neighbours.push(top);
     if (right && !right.visited) neighbours.push(right);
     if (bottom && !bottom.visited) neighbours.push(bottom);
     if (left && !left.visited) neighbours.push(left);
 
     // Choose a random neighbour from the neighbours array
-    if (neighbours.length !== 0) {
-      let random = Math.floor(Math.random() * neighbours.length);
-      return neighbours[random];
-    } else {
-      return undefined;
-    }
+    if (neighbours.length !== 0)
+      return neighbours[Math.floor(Math.random() * neighbours.length)];
+    else return null;
   }
 
   // walls
@@ -138,8 +131,8 @@ class Cell {
   //to highlight the current cell on grid
   highlight(columns) {
     // Additions and subtractions added so the highlighted cell does cover the walls
-    let x = (this.colNum * this.parentSize) / columns + 1;
-    let y = (this.rowNum * this.parentSize) / columns + 1;
+    const x = (this.colNum * this.parentSize) / columns + 1;
+    const y = (this.rowNum * this.parentSize) / columns + 1;
     ctx.fillStyle = "purple";
     ctx.fillRect(
       x,
@@ -151,7 +144,7 @@ class Cell {
 
   removeWalls(cell1, cell2) {
     // compares to two cells on x axis
-    let x = cell1.colNum - cell2.colNum;
+    const x = cell1.colNum - cell2.colNum;
     // Removes the relevant walls if there is a different on x axis
     if (x === 1) {
       cell1.walls.leftWall = false;
@@ -161,7 +154,7 @@ class Cell {
       cell2.walls.leftWall = false;
     }
     // compares to two cells on x axis
-    let y = cell1.rowNum - cell2.rowNum;
+    const y = cell1.rowNum - cell2.rowNum;
     // Removes the relevant walls if there is a different on x axis
     if (y === 1) {
       cell1.walls.topWall = false;
@@ -173,8 +166,8 @@ class Cell {
   }
 
   show(size, rows, columns) {
-    let x = (this.colNum * size) / columns;
-    let y = (this.rowNum * size) / rows;
+    const x = (this.colNum * size) / columns;
+    const y = (this.rowNum * size) / rows;
 
     ctx.strokeStyle = "white";
     ctx.fillStyle = "black";
@@ -190,6 +183,6 @@ class Cell {
   }
 }
 
-let newMaze = new Maze(500, 10, 10);
+const newMaze = new Maze(500, 10, 10);
 newMaze.setup();
 newMaze.draw();
